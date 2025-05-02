@@ -9,8 +9,8 @@ part 'lumen_state.dart';
 
 class LumenBloc extends Bloc<LumenEvent, LumenState> {
   LumenBloc({
-    required LumenRepository lumenRepository,
-  }) : _repository = lumenRepository,
+    required LumenRepository repository,
+  }) : _repository = repository,
        super(const LumenState()) {
     on<_SendText>(_onSendText);
   }

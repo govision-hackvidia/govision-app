@@ -14,5 +14,7 @@ class RepositoryModule {
     injector.registerFactory<LumenRepository>(
       () => LumenRepositoryImpl(client: injector()),
     );
+
+    injector.registerFactory<NewsRepository>(NewsRepositoryImpl.new);
   }
 }

@@ -1,1 +1,2 @@
-export 'talk/chat_model.dart';
+export 'lumen/chat_model.dart';
+export 'news/news_model.dart';
