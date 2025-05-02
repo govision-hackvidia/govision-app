@@ -12,15 +12,13 @@ class App extends StatelessWidget {
       colorTheme: AppColors.colors(),
       textTheme: AppTextStyles.textStyles(),
       child: MaterialApp(
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          ),
-          useMaterial3: true,
-        ),
+        title: 'GoVision',
+        theme: AppThemeData.themeData().themeData,
+        darkTheme: AppThemeData.themeData().themeData,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const DashboardPage(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
