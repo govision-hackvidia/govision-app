@@ -55,8 +55,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 pushTransition(
                   context,
-                  const CameraPage(isWalkingGuide: true),
-                  rootNavigator: true,
+                  const CameraPage(),
                 );
               },
               child: const Text('Guide Me Walking'),
@@ -67,7 +66,6 @@ class HomePage extends StatelessWidget {
                 pushTransition(
                   context,
                   const CameraPage(isWalkingGuide: false),
-                  rootNavigator: true,
                 );
               },
               style: ElevatedButton.styleFrom(

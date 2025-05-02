@@ -78,7 +78,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                   ),
                 if (news.minutes != null)
                   Text(
-                    '${news.minutes!} min read',
+                    news.minutes!,
                     style: textTheme.caption2Bold.copyWith(
                       color: colors.captionGray,
                     ),

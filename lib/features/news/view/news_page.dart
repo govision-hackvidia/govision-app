@@ -191,7 +191,7 @@ class _NewsPageState extends State<NewsPage> {
                                         ),
                                       ),
                                       Text(
-                                        '${featuredNews.minutes} min read',
+                                        '${featuredNews.minutes}',
                                         style: textTheme.caption2Bold.copyWith(
                                           color: colors.captionGray,
                                         ),
