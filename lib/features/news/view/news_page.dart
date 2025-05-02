@@ -118,90 +118,98 @@ class _NewsPageState extends State<NewsPage> {
 
                     return Column(
                       children: [
-                        Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: featuredNews.photo ?? '',
-                              width: double.infinity,
-                              height: 265,
-                              fit: BoxFit.cover,
-                              imageBuilder:
-                                  (context, imageProvider) => Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
+                        GestureDetector(
+                          onTap: () {
+                            pushTransition(
+                              context,
+                              NewsDetailPage(news: featuredNews),
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: featuredNews.photo ?? '',
+                                width: double.infinity,
+                                height: 265,
+                                fit: BoxFit.cover,
+                                imageBuilder:
+                                    (context, imageProvider) => Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
+                              ),
+                              Container(
+                                width: double.infinity,
+                                height: 265,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withOpacity(0.5),
+                                    ],
                                   ),
-                            ),
-                            Container(
-                              width: double.infinity,
-                              height: 265,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withOpacity(0.5),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 16,
+                                left: 16,
+                                right: 16,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: colors.secondaryBlue,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        'WORLD',
+                                        style: textTheme.smallCaption1SemiBold
+                                            .copyWith(color: Colors.white),
+                                      ),
+                                    ),
+                                    8.vertical,
+                                    Text(
+                                      featuredNews.title ?? '',
+                                      style: GoogleFonts.lora(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    8.vertical,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '${featuredNews.date} - ${featuredNews.source}',
+                                          style: textTheme.caption2Bold.copyWith(
+                                            color: colors.captionGray,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${featuredNews.minutes}',
+                                          style: textTheme.caption2Bold.copyWith(
+                                            color: colors.captionGray,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              bottom: 16,
-                              left: 16,
-                              right: 16,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: colors.secondaryBlue,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      'WORLD',
-                                      style: textTheme.smallCaption1SemiBold
-                                          .copyWith(color: Colors.white),
-                                    ),
-                                  ),
-                                  8.vertical,
-                                  Text(
-                                    featuredNews.title ?? '',
-                                    style: GoogleFonts.lora(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  8.vertical,
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '${featuredNews.date} - ${featuredNews.source}',
-                                        style: textTheme.caption2Bold.copyWith(
-                                          color: colors.captionGray,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${featuredNews.minutes}',
-                                        style: textTheme.caption2Bold.copyWith(
-                                          color: colors.captionGray,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         24.vertical,
                         Divider(color: colors.borderGray, height: 1),
