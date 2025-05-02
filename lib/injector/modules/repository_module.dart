@@ -10,5 +10,9 @@ class RepositoryModule {
     injector.registerFactory<EnviroscanRepository>(
       () => EnviroscanRepositoryImpl(client: injector()),
     );
+
+    injector.registerFactory<LumenRepository>(
+      () => LumenRepositoryImpl(client: injector()),
+    );
   }
 }

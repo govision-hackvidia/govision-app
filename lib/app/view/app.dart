@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:govision/core/core.dart';
 import 'package:govision/features/camera/bloc/enviroscan/enviroscan_bloc.dart';
 import 'package:govision/features/dashboard/dashboard.dart';
+import 'package:govision/features/lumen/lumen.dart';
 import 'package:govision/injector/injector.dart';
 import 'package:govision/l10n/l10n.dart';
 
@@ -15,10 +16,12 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final EnviroscanBloc _enviroscanBloc;
+  late final LumenBloc _lumenBloc;
 
   @override
   void initState() {
     _enviroscanBloc = Injector.instance<EnviroscanBloc>();
+    _lumenBloc = Injector.instance<LumenBloc>();
     super.initState();
   }
 
@@ -27,6 +30,7 @@ class _AppState extends State<App> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<EnviroscanBloc>.value(value: _enviroscanBloc),
+        BlocProvider<LumenBloc>.value(value: _lumenBloc),
       ],
       child: const _AppBody(),
     );
