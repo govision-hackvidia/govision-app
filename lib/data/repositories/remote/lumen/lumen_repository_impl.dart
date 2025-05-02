@@ -12,7 +12,9 @@ class LumenRepositoryImpl implements LumenRepository {
   @override
   Future<String> sendText(String text) async {
     try {
-      final response = await _client.post('/lumen', data: {'text': text});
+      final formData = FormData.fromMap({'text': text});
+
+      final response = await _client.post('/lumen', data: formData);
 
       final raw = response.data;
       final data =

@@ -15,7 +15,7 @@ class EnviroscanRepositoryImpl implements EnviroscanRepository {
 
     final formData = FormData.fromMap({
       'text': text,
-      'image': await MultipartFile.fromFile(image.path, filename: fileName),
+      'img': await MultipartFile.fromFile(image.path, filename: fileName),
     });
 
     try {
