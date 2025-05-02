@@ -97,7 +97,7 @@ class _DashboardPageState extends State<DashboardPage> {
             activeIcon: Assets.icons.talk.svg(
               colorFilter: ColorFilter.mode(colors.primary, BlendMode.srcIn),
             ),
-            label: 'Talk',
+            label: 'LUMEN',
             isActive: _selectedIndex == 1,
           ),
           const BottomNavigationBarItem(
