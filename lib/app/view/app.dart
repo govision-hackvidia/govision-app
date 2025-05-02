@@ -1,10 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:govision/core/core.dart';
+import 'package:govision/features/camera/bloc/enviroscan/enviroscan_bloc.dart';
 import 'package:govision/features/dashboard/dashboard.dart';
+import 'package:govision/injector/injector.dart';
 import 'package:govision/l10n/l10n.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  late final EnviroscanBloc _enviroscanBloc;
+
+  @override
+  void initState() {
+    _enviroscanBloc = Injector.instance<EnviroscanBloc>();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<EnviroscanBloc>.value(value: _enviroscanBloc),
+      ],
+      child: const _AppBody(),
+    );
+  }
+}
+
+class _AppBody extends StatelessWidget {
+  const _AppBody();
 
   @override
   Widget build(BuildContext context) {

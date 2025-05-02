@@ -49,6 +49,7 @@ flutter:
     - assets/icons/
     - assets/illustrations/
     - assets/images/
+    - assets/lottie/
   uses-material-design: true
   generate: true
 
