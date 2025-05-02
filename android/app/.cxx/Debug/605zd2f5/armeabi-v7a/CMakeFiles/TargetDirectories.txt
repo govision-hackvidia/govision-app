@@ -1,0 +1,2 @@
+E:/Projects/Hackvidia/govision-app/android/app/.cxx/Debug/605zd2f5/armeabi-v7a/CMakeFiles/edit_cache.dir
+E:/Projects/Hackvidia/govision-app/android/app/.cxx/Debug/605zd2f5/armeabi-v7a/CMakeFiles/rebuild_cache.dir
