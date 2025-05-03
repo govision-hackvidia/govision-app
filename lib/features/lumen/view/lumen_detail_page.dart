@@ -88,7 +88,7 @@ class _LumenDetailPageState extends State<LumenDetailPage> {
       backgroundColor: colors.backgroundGray,
       appBar: AppBar(
         title: const Text(
-          'What is your opinion about this event?',
+          'LUMEN',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
