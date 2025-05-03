@@ -31,9 +31,12 @@ class _CameraPageState extends State<CameraPage> {
   void initState() {
     super.initState();
     _isWalkingGuide = widget.isWalkingGuide;
-    _initializeCamera();
-    _initializeVoice();
-    _initializeConversations();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _initializeCamera();
+    await _initializeVoice();
   }
 
   Future<void> _initializeCamera() async {
@@ -55,21 +58,6 @@ class _CameraPageState extends State<CameraPage> {
     _voiceService.isListening.addListener(() {
       if (mounted) setState(() {});
     });
-  }
-
-  void _initializeConversations() {
-    _conversations.addAll([
-      const ChatModel(
-        message:
-            'As the Governor of Metropolis City, I believe that accessibility for people with disabilities is crucial...',
-        isAnswer: true,
-      ),
-      const ChatModel(
-        message:
-            "What is the Metropolis Governor's opinion on accessibility for people with disabilities?",
-        isAnswer: false,
-      ),
-    ]);
   }
 
   @override
