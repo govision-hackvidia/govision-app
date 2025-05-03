@@ -1,13 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:govision/core/core.dart';
 import 'package:govision/data/models/models.dart';
-import 'package:govision/features/camera/bloc/enviroscan/enviroscan_bloc.dart';
 import 'package:govision/features/camera/camera.dart';
 import 'package:govision/gen/assets.gen.dart';
+import 'package:govision/utils/utils.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 
 class CameraPage extends StatefulWidget {
@@ -26,17 +28,24 @@ class _CameraPageState extends State<CameraPage> {
   late bool _isWalkingGuide;
   bool _isPanelExpanded = false;
   final List<ChatModel> _conversations = [];
+  late AudioPlayer _audioPlayer;
+  Timer? _hazalertTimer;
+  bool _isPlayingSound = false;
 
   @override
   void initState() {
     super.initState();
     _isWalkingGuide = widget.isWalkingGuide;
+    _audioPlayer = AudioPlayer();
     _initialize();
   }
 
   Future<void> _initialize() async {
     await _initializeCamera();
     await _initializeVoice();
+    if (!_isWalkingGuide) {
+      _startHazalertPeriodicCheck();
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -60,11 +69,37 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
+  void _startHazalertPeriodicCheck() {
+    _hazalertTimer?.cancel();
+    _hazalertTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+      if (!_controller.value.isInitialized || _isWalkingGuide) return;
+
+      try {
+        final image = await _captureImage();
+        if (mounted) {
+          context.read<HazalertBloc>().add(HazalertEvent.hazalert(image));
+        }
+      } catch (e) {
+        debugPrint('Error capturing image for Hazalert: $e');
+      }
+    });
+  }
+
+  Future<void> _playBeepSound() async {
+    if (!_isPlayingSound) {
+      _isPlayingSound = true;
+      await _audioPlayer.play(AssetSource('sounds/beep.mp3'));
+      _isPlayingSound = false;
+    }
+  }
+
   @override
   void dispose() {
+    _hazalertTimer?.cancel();
     _controller.dispose();
     _voiceService.dispose();
     _scrollController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -79,6 +114,8 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future<void> _onSpeechResult(SpeechRecognitionResult result) async {
+    if (!_isWalkingGuide) return;
+
     final text = result.recognizedWords.trim();
     if (result.finalResult && text.isNotEmpty) {
       _addMessage(text, false);
@@ -90,9 +127,9 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  Future<File> _captureImage() async {
+  Future<XFile> _captureImage() async {
     final xFile = await _controller.takePicture();
-    return File(xFile.path);
+    return ImageUtils.smartCompress(xFile, isHazalert: false);
   }
 
   void _addMessage(String text, bool isAnswer) {
@@ -127,30 +164,60 @@ class _CameraPageState extends State<CameraPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: BlocListener<EnviroscanBloc, EnviroscanState>(
-          listener: (context, state) async {
-            state.text.when(
-              initial: () {},
-              loading: () => _addMessage(typingMessage, true),
-              data: (text) async {
-                _removeTyping();
-                _addMessage(text, true);
-                await _voiceService.speak(text);
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<EnviroscanBloc, EnviroscanState>(
+              listener: (context, state) async {
+                if (!_isWalkingGuide) return;
+
+                state.text.when(
+                  initial: () {},
+                  loading: () => _addMessage(typingMessage, true),
+                  data: (text) async {
+                    _removeTyping();
+                    _addMessage(text, true);
+                    await _voiceService.speak(text);
+                  },
+                  error: (err) {
+                    _removeTyping();
+                    _addMessage('Error: $err', true);
+                  },
+                );
               },
-              error: (err) {
-                _removeTyping();
-                _addMessage('Error: $err', true);
+            ),
+            BlocListener<HazalertBloc, HazalertState>(
+              listener: (context, state) {
+                if (_isWalkingGuide) return;
+
+                state.distance.map(
+                  initial: (_) {},
+                  loading: (_) {},
+                  error: (_) {},
+                  data: (data) {
+                    if (data.data < 0.5) {
+                      _playBeepSound();
+                    }
+                  },
+                );
               },
-            );
-          },
+            ),
+          ],
           child: Stack(
             children: [
               CameraPreviewWidget(controller: _controller),
               const BackButtonOverlay(),
               ModeToggleOverlay(
                 isWalking: _isWalkingGuide,
-                onToggle:
-                    () => setState(() => _isWalkingGuide = !_isWalkingGuide),
+                onToggle: () {
+                  setState(() {
+                    _isWalkingGuide = !_isWalkingGuide;
+                    if (!_isWalkingGuide) {
+                      _startHazalertPeriodicCheck();
+                    } else {
+                      _hazalertTimer?.cancel();
+                    }
+                  });
+                },
               ),
               if (_isWalkingGuide)
                 ChatPanel(
@@ -167,6 +234,40 @@ class _CameraPageState extends State<CameraPage> {
                   bottomPadding: bottomInset,
                   primaryColor: colors.primary,
                   dangerColor: colors.danger,
+                ),
+              if (!_isWalkingGuide)
+                Positioned(
+                  bottom: 16 + bottomInset,
+                  left: 0,
+                  right: 0,
+                  child: BlocBuilder<HazalertBloc, HazalertState>(
+                    builder: (context, state) {
+                      return Column(
+                        children: [
+                          Text(
+                            'Nearest Distance: ${state.distance.when(initial: () => '--', loading: () => 'Calculating...', error: (_) => 'Error', data: (distance) => distance.toStringAsFixed(2))}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (state.distance.maybeMap(
+                            data: (data) => data.data < 0.5,
+                            orElse: () => false,
+                          ))
+                            const Text(
+                              'WARNING: Object too close!',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
             ],
           ),

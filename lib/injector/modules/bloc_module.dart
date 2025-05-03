@@ -1,4 +1,4 @@
-import 'package:govision/features/camera/bloc/enviroscan/enviroscan_bloc.dart';
+import 'package:govision/features/camera/camera.dart';
 import 'package:govision/features/lumen/lumen.dart';
 import 'package:govision/features/news/news.dart';
 import 'package:govision/injector/injector.dart';
@@ -11,6 +11,10 @@ class BlocModule {
 
     injector.registerFactory<EnviroscanBloc>(
       () => EnviroscanBloc(repository: injector()),
+    );
+
+    injector.registerFactory<HazalertBloc>(
+      () => HazalertBloc(repository: injector()),
     );
 
     injector.registerFactory<LumenBloc>(

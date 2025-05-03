@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:govision/core/core.dart';
-import 'package:govision/features/camera/bloc/enviroscan/enviroscan_bloc.dart';
+import 'package:govision/features/camera/camera.dart';
 import 'package:govision/features/dashboard/dashboard.dart';
 import 'package:govision/features/lumen/lumen.dart';
 import 'package:govision/features/news/news.dart';
@@ -17,12 +17,14 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final EnviroscanBloc _enviroscanBloc;
+  late final HazalertBloc _hazalertBloc;
   late final LumenBloc _lumenBloc;
   late final NewsBloc _newsBloc;
 
   @override
   void initState() {
     _enviroscanBloc = Injector.instance<EnviroscanBloc>();
+    _hazalertBloc = Injector.instance<HazalertBloc>();
     _lumenBloc = Injector.instance<LumenBloc>();
     _newsBloc = Injector.instance<NewsBloc>();
     super.initState();
@@ -33,6 +35,7 @@ class _AppState extends State<App> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<EnviroscanBloc>.value(value: _enviroscanBloc),
+        BlocProvider<HazalertBloc>.value(value: _hazalertBloc),
         BlocProvider<LumenBloc>.value(value: _lumenBloc),
         BlocProvider<NewsBloc>.value(value: _newsBloc),
       ],

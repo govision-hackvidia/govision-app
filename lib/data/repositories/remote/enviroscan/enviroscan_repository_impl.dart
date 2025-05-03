@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
 import 'package:govision/core/core.dart';
 import 'package:govision/data/data.dart';
@@ -10,7 +11,7 @@ class EnviroscanRepositoryImpl implements EnviroscanRepository {
   final DioClient _client;
 
   @override
-  Future<String> sendScan(String text, File image) async {
+  Future<String> sendScan(String text, XFile image) async {
     final fileName = image.path.split('/').last;
 
     final formData = FormData.fromMap({

@@ -1,5 +1,5 @@
-import 'dart:io';
+import 'package:camera/camera.dart';
 
 mixin EnviroscanRepository {
-  Future<String> sendScan(String text, File image);
+  Future<String> sendScan(String text, XFile image);
 }
